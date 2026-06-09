@@ -6,4 +6,7 @@ export default defineConfig({
   datasource: {
     url: "postgresql://postgres:password@localhost:5432/tacticalstore",
   },
+  migrations: {
+    seed: "ts-node prisma/seed.ts",
+  },
 });
