@@ -1,9 +1,10 @@
+import { Pool } from "pg";
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
-const adapter = new PrismaPg({
-    connectionString: "postgresql://postgres:password@localhost:5432/tacticalstore"
-});
+const pool = new Pool({ connectionString: "postgresql://postgres:password@localhost:5432/tacticalstore" });
+
+const adapter = new PrismaPg(pool);
 
 const prisma = new PrismaClient({ adapter });
 
@@ -102,5 +103,13 @@ async function main() {
 }
 
 main()
-    .catch(console.error)
-    .finally(() => prisma.$disconnect());
+    .then(async () => {
+        await prisma.$disconnect();
+        await pool.end();
+    })
+    .catch(async (e) => {
+        console.error(e);
+        await prisma.$disconnect();
+        await pool.end();
+        process.exit(1);
+    });
