@@ -8,14 +8,12 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Stripe key not configured.' }, { status: 500 })
     }
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
+    const { orderId, amount } = await request.json();
+    const user = await AuthenticateUser();
+    if (!user) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     try {
-        const { orderId, amount } = await request.json();
-        const user = await AuthenticateUser();
-        if (!user) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-        }
-
         const paymentIntent = await stripe.paymentIntents.create({
             amount: Math.round(amount * 100),
             currency: 'eur',

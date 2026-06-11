@@ -3,12 +3,12 @@ import { prisma } from "@/lib/prisma";
 import { AuthenticateUser } from "@/lib/auth";
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+    const user = await AuthenticateUser();
+    if (!user || user.role !== "ADMIN") {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const id = params.id;
     try {
-        const user = await AuthenticateUser();
-        if (!user || user.role !== "ADMIN") {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-        }
-        const id = params.id;
         const product = await prisma.product.findUnique({ where: { id: parseInt(id) } });
         if (!product) {
             return NextResponse.json({ error: "Product not found" }, { status: 404 });
@@ -24,12 +24,12 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 }
 
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+    const user = await AuthenticateUser();
+    if (!user || user.role !== "ADMIN") {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const id = params.id;
     try {
-        const user = await AuthenticateUser();
-        if (!user || user.role !== "ADMIN") {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-        }
-        const id = params.id;
         const product = await prisma.product.findUnique({ where: { id: parseInt(id) } });
         if (!product) {
             return NextResponse.json({ error: "Product not found" }, { status: 404 });

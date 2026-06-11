@@ -8,13 +8,12 @@ export async function POST(req: NextRequest) {
     if (!rateLimit(ip)) {
         return NextResponse.json({ error: "Too many requests" }, { status: 429 });
     }
+    const { email, password } = await req.json();
 
+    if (!email || !password) {
+        return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
+    }
     try {
-        const { email, password } = await req.json();
-
-        if (!email || !password) {
-            return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
-        }
         const existingUser = await prisma.user.findUnique({ where: { email } });
         if (existingUser) {
             return NextResponse.json({ error: "User already exists" }, { status: 400 });

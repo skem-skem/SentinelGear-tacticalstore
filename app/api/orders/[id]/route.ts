@@ -3,14 +3,13 @@ import { prisma } from "@/lib/prisma";
 import { AuthenticateUser } from "@/lib/auth";
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+    const user = await AuthenticateUser();
+    if (!user) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const userId = user.id;
+    const orderId = parseInt(params.id, 10);
     try {
-        const user = await AuthenticateUser();
-        if (!user) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-        }
-        const userId = user.id;
-        const orderId = parseInt(params.id, 10);
-
         const order = await prisma.order.findFirst({
             where: {
                 id: orderId,
