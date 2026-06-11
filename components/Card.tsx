@@ -1,14 +1,33 @@
+"use client"
+
+import Image from "next/image";
+import { useAppDispatch } from "@/store/hooks";
+import { addToCart } from "@/store/slices/cartSlice";
+
 interface Props {
     id: number;
     name: string;
     description: string;
     price: number;
+    image: string | null
 }
 
-export default function Card({ name, description, price, }: Props) {
+export default function Card({ id, name, description, price, image }: Props) {
+    const dispatch = useAppDispatch();
+
+    const handleAddToCart = () => {
+        dispatch(addToCart({
+            id,
+            name,
+            price,
+            image: image || "",
+            quantity: 1
+        }));
+    }
+
     return (
         <div className="bg-neutral-primary-soft rounded-base shadow-xs overflow-hidden transition hover:shadow-md rounded-2xl">
-            <div className="h-48 bg-gray-500" />
+            <Image className="h-48 bg-gray-500" src={image || "/placeholder.webp"} alt="image" />
             <div className="p-6 flex flex-col h-full">
                 <h5 className="mt-4 text-xl font-semibold text-heading">
                     {name}
@@ -23,7 +42,7 @@ export default function Card({ name, description, price, }: Props) {
                         ${price}
                     </span>
 
-                    <button className="px-4 py-2 bg-green-900 text-green-300 hover:bg-green-700 rounded drop-shadow-2xl drop-shadow-green-900/50 transition">
+                    <button onClick={handleAddToCart} className="px-4 py-2 bg-green-900 text-green-300 hover:bg-green-700 rounded drop-shadow-2xl drop-shadow-green-900/50 transition">
                         Add to cart
                     </button>
                 </div>

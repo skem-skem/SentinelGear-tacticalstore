@@ -8,6 +8,7 @@ interface Product {
     name: string;
     description: string;
     price: number;
+    image: any
 }
 
 export default function Products() {
@@ -41,7 +42,7 @@ export default function Products() {
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-10 p-10">
                     {products.map((product) => (
-                        <Card key={product.id} id={product.id} name={product.name} description={product.description} price={product.price} />
+                        <Card key={product.id} id={product.id} name={product.name} description={product.description} price={product.price} image={product.image} />
                     ))}
                 </div>
             )}
