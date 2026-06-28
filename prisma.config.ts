@@ -4,7 +4,7 @@ import { defineConfig } from "prisma/config";
 export default defineConfig({
   schema: path.join("prisma", "schema.prisma"),
   datasource: {
-    url: "postgresql://postgres:password@localhost:5432/tacticalstore",
+    url: process.env.DATABASE_URL!,
   },
   migrations: {
     seed: "ts-node prisma/seed.ts",
