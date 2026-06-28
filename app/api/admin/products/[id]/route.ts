@@ -23,12 +23,12 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const user = await AuthenticateUser();
     if (!user || user.role !== "ADMIN") {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const id = params.id;
+    const id = await params;
     try {
         const product = await prisma.product.findUnique({ where: { id: parseInt(id) } });
         if (!product) {
