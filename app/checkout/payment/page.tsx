@@ -10,7 +10,7 @@ const stripePromise = loadStripe(
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 );
 
-export default function PaymentPage() {
+function PaymentContent() {
     const searchParams = useSearchParams();
     const orderId = searchParams.get("orderId");
 
@@ -22,17 +22,12 @@ export default function PaymentPage() {
 
         const run = async () => {
             setLoading(true);
-
             const res = await fetch("/api/checkout/create-payment-intent", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ orderId }),
             });
-
             const data = await res.json();
-
-            console.log("PAYMENT INTENT RESPONSE:", data);
-
             setClientSecret(data.clientSecret);
             setLoading(false);
         };
@@ -44,10 +39,16 @@ export default function PaymentPage() {
     if (!clientSecret) return <p>Missing client secret</p>;
 
     return (
-        <Suspense>
-            <Elements stripe={stripePromise} options={{ clientSecret }}>
-                <Payment />
-            </Elements>
+        <Elements stripe={stripePromise} options={{ clientSecret }}>
+            <Payment />
+        </Elements>
+    );
+}
+
+export default function PaymentPage() {
+    return (
+        <Suspense fallback={<p>Loading...</p>}>
+            <PaymentContent />
         </Suspense>
     );
 }
