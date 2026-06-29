@@ -41,7 +41,7 @@ export default function Products() {
         <div className="pt-20 text-white">
             <h1 className="font-display text-2xl text-center">EXPLORE GEAR</h1>
             {loading ? (
-                <p className="text-center font-display text-5xl">Loading...</p>
+                <p className="pt-20 text-center font-display text-5xl">Loading...</p>
             ) : (
                 <div>
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-10 px-4 sm:px-10 mt-6">
